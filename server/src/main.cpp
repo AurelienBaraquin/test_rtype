@@ -1,8 +1,6 @@
-#include "lib.hpp"
-#include "engine.hpp"
+#include "common.hpp"
+#include "core.hpp"
 
 int main() {
-    Lib lib;
-    lib.print();
     return 0;
 }

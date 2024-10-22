@@ -1,4 +1,4 @@
-#include "engine.hpp"
+#include "core.hpp"
 
 int main() {
     Engine engine(800, 450);

@@ -1,7 +1,19 @@
 project(GameEngine)
 
-add_library(GameEngine STATIC src/engine.cpp)
+option(BUILD_GRAPHICS "Build graphics module" ON)
+option(BUILD_AUDIO "Build audio module" ON)
+option(BUILD_NETWORK "Build network module" ON)
 
-target_include_directories(GameEngine PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+add_subdirectory(core)
 
-target_link_libraries(GameEngine raylib chipmunk2d::chipmunk2d)
+if(BUILD_GRAPHICS)
+    add_subdirectory(graphics)
+endif()
+
+if(BUILD_AUDIO)
+    add_subdirectory(audio)
+endif()
+
+if(BUILD_NETWORK)
+    add_subdirectory(network)
+endif()
