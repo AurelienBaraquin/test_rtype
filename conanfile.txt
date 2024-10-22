@@ -1,6 +1,7 @@
 [requires]
 boost/1.86.0
 box2d/3.0.0
+raylib/5.0
 
 [generators]
 CMakeDeps

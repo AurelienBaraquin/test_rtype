@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(Boost REQUIRED)
 find_package(box2d REQUIRED)
+find_package(raylib REQUIRED)
 
 add_subdirectory(engine)
 add_subdirectory(client)
