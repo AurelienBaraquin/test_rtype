@@ -1,13 +1,13 @@
 project(GameEngine)
 
-option(BUILD_GRAPHICS "Build graphics module" ON)
+option(BUILD_RENDER "Build render module" ON)
 option(BUILD_AUDIO "Build audio module" ON)
 option(BUILD_NETWORK "Build network module" ON)
 
 add_subdirectory(core)
 
-if(BUILD_GRAPHICS)
-    add_subdirectory(graphics)
+if(BUILD_RENDER)
+    add_subdirectory(render)
 endif()
 
 if(BUILD_AUDIO)

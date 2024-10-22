@@ -4,4 +4,4 @@ add_executable(GameClient src/main.cpp)
 
 target_include_directories(GameClient PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(GameClient PRIVATE Common GameEngine GameEngine::Graphics GameEngine::Audio GameEngine::Network)
+target_link_libraries(GameClient PRIVATE Common GameEngine GameEngine::Render GameEngine::Audio GameEngine::Network)
