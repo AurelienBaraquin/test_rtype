@@ -1,5 +1,7 @@
 #include "engine.hpp"
 
+#define VELOCITY    0.5f
+
 Engine::Engine(int screenWidth, int screenHeight)
     : screenWidth(screenWidth), screenHeight(screenHeight) {
     Init();
@@ -15,75 +17,74 @@ Engine::~Engine() {
 }
 
 void Engine::Init() {
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
     InitWindow(screenWidth, screenHeight, "Raylib + Box2D Engine");
     SetTargetFPS(60);
 
-    worldDef = b2DefaultWorldDef();
-    worldDef.gravity = (b2Vec2){0.0f, 10.0f};
+    // Initialisation de la physique Chipmunk
+    space = cpSpaceNew();
+    cpSpaceSetGravity(space, cpv(0, 980));  // Appliquer la gravité
 
-    worldId = b2CreateWorld(&worldDef);
+    // Création d'un corps dynamique (joueur)
+    playerBody = cpSpaceAddBody(space, cpBodyNew(1.0f, cpMomentForBox(1.0f, 50, 50)));
+    cpBodySetPosition(playerBody, cpv(400, 200));
 
-    groundBodyDef = b2DefaultBodyDef();
-    groundBodyDef.position = (b2Vec2){0.0f, 10.0f};
+    playerShape = cpSpaceAddShape(space, cpBoxShapeNew(playerBody, 50, 50, 0.0f));
+    cpShapeSetFriction(playerShape, 0.7f);
 
-    groundId = b2CreateBody(worldId, &groundBodyDef);
-    groundBox = b2MakeBox(50.0f, 10.0f);
-
-    groundShapeDef = b2DefaultShapeDef();
-    b2CreatePolygonShape(groundId, &groundShapeDef, &groundBox);
-
-    bodyDef = b2DefaultBodyDef();
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position = (b2Vec2){4.0f, 4.0f};
-    bodyId = b2CreateBody(worldId, &bodyDef);
-
-    dynamicBox = b2MakeBox(1.0f, 1.0f);
-
-    shapeDef = b2DefaultShapeDef();
-    shapeDef.density = 1.0f;
-    shapeDef.friction = 0.3f;
-
-    b2CreatePolygonShape(bodyId, &shapeDef, &dynamicBox);
+    // Création d'un sol statique
+    groundBody = cpSpaceGetStaticBody(space);
+    groundShape = cpSpaceAddShape(space, cpSegmentShapeNew(groundBody, cpv(0, 400), cpv(800, 400), 0.0f));
+    cpShapeSetFriction(groundShape, 1.0f);
 }
 
 void Engine::Update() {
-    const float timeStep = 1.0f / 60.0f;
-    const int subStepCount = 4;
+    cpVect force = cpv(0, 0);
 
-    b2World_Step(worldId, timeStep, subStepCount);
+    // Appliquer une force basée sur les contrôles du joueur
+    if (IsKeyDown(KEY_RIGHT)) force = cpv(1000, 0);
+    if (IsKeyDown(KEY_LEFT)) force = cpv(-1000, 0);
 
-    if (IsKeyPressed(KEY_R)) {
-        b2Vec2 position = (b2Vec2){4.0f, 4.0f};
-        b2Rot rotation = (b2Rot){0.0f};
-
-        b2Body_SetTransform(bodyId, position, rotation);
+    bool isOnGround = false;
+    cpVect playerPos = cpBodyGetPosition(playerBody);
+    if (playerPos.y + 25 >= 400) {  // Le bas du joueur touche le sol
+        isOnGround = true;
+    } else {
+        isOnGround = false;
     }
+
+    // Sauter si la touche Espace est pressée et que le joueur est au sol
+    if (IsKeyPressed(KEY_SPACE) && isOnGround) {
+        cpBodyApplyImpulseAtWorldPoint(playerBody, cpv(0, -400), cpBodyGetPosition(playerBody));  // Impulsion vers le haut
+        isOnGround = false;  // Le joueur est maintenant en l'air
+    }
+
+    cpBodyApplyForceAtWorldPoint(playerBody, force, cpBodyGetPosition(playerBody));
+
+    // Mettre à jour la physique
+    cpSpaceStep(space, 1.0f / 60.0f);
 }
 
 void Engine::Draw() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    float pixelsPerMeter = 10.0f;  // Conversion de mètres à pixels
+    // Dessiner le joueur
+    cpVect pos = cpBodyGetPosition(playerBody);
+    DrawRectangle(pos.x - 25, pos.y - 25, 50, 50, RED);
 
-    b2Vec2 position = b2Body_GetPosition(bodyId);
-    b2Rot rotation = b2Body_GetRotation(bodyId);
+    // Dessiner le sol
+    DrawLine(0, 400, 800, 400, BLACK);
 
-    // Multiplier la position par pixelsPerMeter pour rendre la boîte visible
-    DrawRectanglePro(
-        (Rectangle){position.x * pixelsPerMeter, position.y * pixelsPerMeter, 1.0f * pixelsPerMeter, 1.0f * pixelsPerMeter},
-        (Vector2){0.5f * pixelsPerMeter, 0.5f * pixelsPerMeter},
-        b2Rot_GetAngle(rotation) * RAD2DEG,
-        RED
-    );
-
-    DrawText("Appuyez sur R pour réinitialiser la position de la boîte", 10, 10, 20, DARKGRAY);
     EndDrawing();
 }
 
 void Engine::Shutdown() {
+    cpShapeFree(playerShape);
+    cpBodyFree(playerBody);
+    cpShapeFree(groundShape);
+    cpSpaceFree(space);
     CloseWindow();
-    b2DestroyWorld(worldId);
 }
 
 void Engine::Run() {

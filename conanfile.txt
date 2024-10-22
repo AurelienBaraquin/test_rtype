@@ -1,6 +1,6 @@
 [requires]
 boost/1.86.0
-box2d/3.0.0
+chipmunk2d/7.0.3
 raylib/5.0
 
 [generators]

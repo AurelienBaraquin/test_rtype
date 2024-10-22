@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <raylib.h>
-#include <box2d/box2d.h>
+#include <chipmunk/chipmunk.h>
 
 class Engine {
 public:
@@ -17,16 +17,12 @@ private:
     void Shutdown();
 
     Camera2D camera;
+    int screenWidth;
+    int screenHeight;
 
-    int screenWidth, screenHeight;
-    b2WorldDef worldDef;
-    b2WorldId worldId;
-    b2BodyDef groundBodyDef;
-    b2BodyId groundId;
-    b2Polygon groundBox;
-    b2ShapeDef groundShapeDef;
-    b2BodyDef bodyDef;
-    b2BodyId bodyId;
-    b2Polygon dynamicBox;
-    b2ShapeDef shapeDef;
+    cpSpace* space;
+    cpBody* playerBody;
+    cpShape* playerShape;
+    cpBody* groundBody;
+    cpShape* groundShape;
 };
