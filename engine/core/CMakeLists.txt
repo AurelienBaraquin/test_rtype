@@ -1,6 +1,6 @@
 project(core)
 
-add_library(Core STATIC src/core.cpp)
+add_library(Core STATIC src/engine.cpp)
 
 target_include_directories(Core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
