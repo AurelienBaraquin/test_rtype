@@ -1,0 +1,80 @@
+version: '3'
+
+tasks:
+  setup:
+    desc: "Full setup: Install system dependencies, Conan, and configure the build system"
+    cmds:
+      - task check-prerequisites
+      - task install-conan
+      - task setup-build
+    silent: true
+
+  check-prerequisites:
+    desc: "Check prerequisites (CMake >= 3.23)"
+    silent: true
+    cmds:
+      - |
+        if ! command -v cmake &> /dev/null; then
+          echo "CMake is not installed. Installing..."
+          sudo apt-get update && sudo apt-get install -y cmake
+        fi
+      - |
+        REQUIRED_CMAKE_VERSION=3.23
+        INSTALLED_CMAKE_VERSION=$(cmake --version | head -n 1 | awk '{print $3}')
+        if [ "$(printf '%s\n' "$REQUIRED_CMAKE_VERSION" "$INSTALLED_CMAKE_VERSION" | sort -V | head -n1)" != "$REQUIRED_CMAKE_VERSION" ]; then
+          echo "CMake version is less than $REQUIRED_CMAKE_VERSION. Updating..."
+          sudo apt-get install -y software-properties-common
+          sudo apt-add-repository -y ppa:kitware/ppa
+          sudo apt-get update
+          sudo apt-get install -y cmake
+        else
+          echo "CMake version $INSTALLED_CMAKE_VERSION is sufficient."
+        fi
+
+  install-conan:
+    desc: "Install Conan package manager"
+    cmds:
+      - |
+        if ! command -v conan &> /dev/null; then
+          echo "Conan is not installed. Installing..."
+          pip install conan --upgrade
+        else
+          echo "Conan is already installed."
+        fi
+      - conan profile detect
+    silent: true
+
+  i:
+    desc: "Install Conan dependencies and configure build system"
+    cmds:
+      - task install
+
+  install:
+    desc: "Install Conan dependencies and configure build system"
+    cmds:
+      - conan install . --output-folder=build --build=missing
+
+  b:
+    desc: "Build the project with conan-release preset"
+    cmds:
+      - task build
+
+  build:
+    desc: "Build the project with conan-release preset"
+    cmds:
+      - cmake --build build --preset conan-release
+
+  server:
+    desc: "Run the server target"
+    cmds:
+      - cmake --build build --preset conan-release --target server
+
+  client:
+    desc: "Run the client target"
+    cmds:
+      - cmake --build build --preset conan-release --target client
+
+  test:
+    desc: "Run the test target"
+    cmds:
+      - cmake --build build --preset conan-release --target test
