@@ -12,7 +12,7 @@ void Engine::run() {
 
     // lua.script_file("script.lua");
 
-    for (auto& module : modules) {
+    for (auto& [type, module] : modules) {
         module->setEventManager(eventManager);
     }
 
@@ -20,17 +20,13 @@ void Engine::run() {
         running = false;
     });
 
-    for (auto& module : modules) {
-        module->init();
-    }
-
     while (running) {
-        for (auto& module : modules) {
+        for (auto& [type, module] : modules) {
             module->update();
         }
     }
 
-    for (auto& module : modules) {
+    for (auto& [type, module] : modules) {
         module->shutdown();
     }
 }

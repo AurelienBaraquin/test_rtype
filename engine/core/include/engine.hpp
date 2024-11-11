@@ -2,7 +2,7 @@
 
 #include "module.hpp"
 #include <chipmunk/chipmunk.h>
-#include <vector>
+#include <unordered_map>
 #include <memory>
 
 class EntityBuilder {
@@ -29,9 +29,16 @@ class Engine {
 public:
     Engine() {}
 
-    template <typename ModuleType, typename... Args>
-    void addModule(Args&&... args) {
-        modules.push_back(std::make_unique<ModuleType>(registry, std::forward<Args>(args)...));
+    template<typename T, typename... Args>
+    T* addModule(Args&&... args) {
+        static_assert(std::is_base_of<Module, T>::value, "T must be derived from IModule");
+
+        auto module = std::make_unique<T>(registry, std::forward<Args>(args)...);
+        T* modulePtr = module.get();
+        modules[std::type_index(typeid(T))] = std::move(module);
+
+        modulePtr->init();
+        return modulePtr;
     }
 
     void run();
@@ -39,7 +46,7 @@ public:
     EntityBuilder entityBuilder = EntityBuilder(registry);
 private:
     bool running = true;
-    std::vector<std::unique_ptr<Module>> modules;
+    std::unordered_map<std::type_index, std::unique_ptr<Module>> modules;
     std::shared_ptr<EventManager> eventManager = std::make_shared<EventManager>();
     entt::registry registry;
 };
