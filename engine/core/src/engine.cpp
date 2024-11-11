@@ -5,32 +5,32 @@ int add(int a, int b) {
 }
 
 void Engine::run() {
-    sol::state lua;
-    lua.open_libraries(sol::lib::base);
+    // sol::state lua;
+    // lua.open_libraries(sol::lib::base);
 
-    lua.set_function("add", &add);
+    // lua.set_function("add", &add);
 
-    lua.script_file("script.lua");
+    // lua.script_file("script.lua");
 
-    // for (auto& module : modules) {
-    //     module->setEventManager(eventManager);
-    // }
+    for (auto& module : modules) {
+        module->setEventManager(eventManager);
+    }
 
-    // eventManager->subscribe<Events::Shutdown>([this](std::shared_ptr<Event> event) {
-    //     running = false;
-    // });
+    eventManager->subscribe<Events::Shutdown>([this](std::shared_ptr<Event> event) {
+        running = false;
+    });
 
-    // for (auto& module : modules) {
-    //     module->init();
-    // }
+    for (auto& module : modules) {
+        module->init();
+    }
 
-    // while (running) {
-    //     for (auto& module : modules) {
-    //         module->update();
-    //     }
-    // }
+    while (running) {
+        for (auto& module : modules) {
+            module->update();
+        }
+    }
 
-    // for (auto& module : modules) {
-    //     module->shutdown();
-    // }
+    for (auto& module : modules) {
+        module->shutdown();
+    }
 }

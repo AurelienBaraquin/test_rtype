@@ -2,11 +2,12 @@
 #define MODULE_HPP
 
 #include "event.hpp"
-#include <sol/sol.hpp>
+#include <entt/entt.hpp>
 
 class Module {
 public:
-    Module(const std::string& name) : moduleName(name) {}
+    Module(entt::registry& registry, const std::string& name)
+        : registry(registry), moduleName(name) {}
     virtual ~Module() {}
 
     void setEventManager(std::shared_ptr<EventManager> manager) {
@@ -24,6 +25,7 @@ public:
 protected:
     std::string moduleName;
     std::shared_ptr<EventManager> eventManager;
+    entt::registry& registry;
 };
 
 #endif // MODULE_HPP

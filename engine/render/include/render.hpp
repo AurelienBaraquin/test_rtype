@@ -4,10 +4,16 @@
 #include "module.hpp"
 #include "raylib.h"
 
+// Components
+
+#include "mesh.hpp"
+#include "transform.hpp"
+#include "visibility.hpp"
+
 class Render : public Module {
 public:
-    Render(int width, int height, const std::string& title)
-        : Module("Graphics"), screenWidth(width), screenHeight(height), windowTitle(title) {}
+    Render(entt::registry& registry, int width, int height, const std::string& title)
+        : Module(registry, "Graphics"), screenWidth(width), screenHeight(height), windowTitle(title) {}
 
     void init() override;
     void update() override;
@@ -17,6 +23,8 @@ private:
     int screenWidth;
     int screenHeight;
     std::string windowTitle;
+
+
 };
 
 #endif // RAYLIB_GRAPHICS_MODULE_HPP

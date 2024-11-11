@@ -7,6 +7,7 @@ find_package(Boost REQUIRED)
 find_package(chipmunk2d REQUIRED)
 find_package(raylib REQUIRED)
 find_package(lua REQUIRED)
+find_package(EnTT REQUIRED)
 
 add_subdirectory(engine)
 add_subdirectory(client)
