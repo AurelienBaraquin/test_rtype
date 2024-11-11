@@ -11,7 +11,6 @@
 class Event {
 public:
     virtual ~Event() = default;
-    virtual std::string getType() const = 0;
 };
 
 class EventManager {
@@ -40,12 +39,8 @@ private:
 };
 
 namespace Events {
-    class StopRunningEvent : public Event {
+    class Shutdown : public Event {
     public:
-        StopRunningEvent() {}
-
-        std::string getType() const override {
-            return "StopRunningEvent";
-        }
+        Shutdown() {}
     };
 }

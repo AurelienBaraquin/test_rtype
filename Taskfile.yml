@@ -67,14 +67,17 @@ tasks:
   server:
     desc: "Run the server target"
     cmds:
+      - task build
       - cmake --build build --preset conan-release --target server
 
   client:
     desc: "Run the client target"
     cmds:
+      - task build
       - cmake --build build --preset conan-release --target client
 
   test:
     desc: "Run the test target"
     cmds:
+      - task build
       - cmake --build build --preset conan-release --target test

@@ -8,7 +8,7 @@ void Render::init() {
 
 void Render::update() {
     if (WindowShouldClose()) {
-        eventManager->publish(std::make_shared<Events::StopRunningEvent>());
+        eventManager->publish(std::make_shared<Events::Shutdown>());
     }
 
     BeginDrawing();

@@ -2,6 +2,7 @@
 #define MODULE_HPP
 
 #include "event.hpp"
+#include <sol/sol.hpp>
 
 class Module {
 public:

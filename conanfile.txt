@@ -2,6 +2,7 @@
 boost/1.86.0
 chipmunk2d/7.0.3
 raylib/5.0
+sol2/3.3.1
 
 [generators]
 CMakeDeps
