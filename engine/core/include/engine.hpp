@@ -41,12 +41,16 @@ public:
         return modulePtr;
     }
 
+    EntityBuilder& createEntity() {
+        return entityBuilder;
+    }
+
     void run();
 
-    EntityBuilder entityBuilder = EntityBuilder(registry);
 private:
     bool running = true;
     std::unordered_map<std::type_index, std::unique_ptr<Module>> modules;
     std::shared_ptr<EventManager> eventManager = std::make_shared<EventManager>();
     entt::registry registry;
+    EntityBuilder entityBuilder = EntityBuilder(registry);
 };

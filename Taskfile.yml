@@ -57,6 +57,7 @@ tasks:
   b:
     desc: "Build the project with conan-release preset"
     cmds:
+      - cmake --preset conan-release
       - task build
 
   build:
@@ -75,6 +76,29 @@ tasks:
     cmds:
       - task build
       - cmake --build build --preset conan-release --target client
+
+  create-module:
+    desc: "Create a new module"
+    cmds:
+      - |
+        if [ -z "{{.CLI_ARGS}}" ]; then
+          echo "Error: MODULE_NAME is not set."
+          exit 1
+        fi
+      - mkdir -p engine/modules/{{.CLI_ARGS}}
+      - mkdir -p engine/modules/{{.CLI_ARGS}}/include
+      - mkdir -p engine/modules/{{.CLI_ARGS}}/include/components
+      - mkdir -p engine/modules/{{.CLI_ARGS}}/src
+      - touch engine/modules/{{.CLI_ARGS}}/include/{{.CLI_ARGS}}.hpp
+      - echo "#pragma once" > engine/modules/{{.CLI_ARGS}}/include/{{.CLI_ARGS}}.hpp
+      - echo "" >> engine/modules/{{.CLI_ARGS}}/include/{{.CLI_ARGS}}.hpp
+      - echo "#include \"module.hpp\"" >> engine/modules/{{.CLI_ARGS}}/include/{{.CLI_ARGS}}.hpp
+      - touch engine/modules/{{.CLI_ARGS}}/src/{{.CLI_ARGS}}.cpp
+      - echo "#include \"{{.CLI_ARGS}}.hpp\"" > engine/modules/{{.CLI_ARGS}}/src/{{.CLI_ARGS}}.cpp
+
+      - touch engine/modules/{{.CLI_ARGS}}/CMakeLists.txt
+
+      - echo "Module {{.CLI_ARGS}} created in engine/modules/"
 
   test:
     desc: "Run the test target"
