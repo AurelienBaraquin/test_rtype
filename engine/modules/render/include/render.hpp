@@ -1,5 +1,4 @@
-#ifndef RAYLIB_GRAPHICS_MODULE_HPP
-#define RAYLIB_GRAPHICS_MODULE_HPP
+#pragma once
 
 #include "module.hpp"
 #include "raylib.h"
@@ -26,5 +25,3 @@ private:
 
 
 };
-
-#endif // RAYLIB_GRAPHICS_MODULE_HPP
