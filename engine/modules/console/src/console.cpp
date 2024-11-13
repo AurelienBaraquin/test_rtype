@@ -24,12 +24,11 @@ void Console::update() {
             return;
         }
         if (input == "print all") {
-            auto view = registry.view<Components::Transform, Components::Mesh>();
-            for (auto entity : view) {
-                auto& transform = view.get<Components::Transform>(entity);
-                auto& mesh = view.get<Components::Mesh>(entity);
-                std::cout << "Entity: " << mesh.name << " Transform: (" << transform.x << ", " << transform.y << ", " << transform.z << ")" << std::endl;
-            }
+            EntityView<Components::Transform, Components::Mesh> view(registry);
+            view.each([](entt::entity e, Components::Transform& transform, Components::Mesh& mesh) {
+                std::cout << "Entity: " << mesh.name << " Transform: (" 
+                        << transform.x << ", " << transform.y << ", " << transform.z << ")" << std::endl;
+            });
         }
         input.clear();
     }

@@ -2,7 +2,7 @@
 #define MODULE_HPP
 
 #include "event.hpp"
-#include <entt/entt.hpp>
+#include "entity.hpp"
 
 class Module {
 public:

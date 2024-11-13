@@ -39,8 +39,5 @@ private:
 };
 
 namespace Events {
-    class Shutdown : public Event {
-    public:
-        Shutdown() {}
-    };
+    class Shutdown : public Event {};
 }
