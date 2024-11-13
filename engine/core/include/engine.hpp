@@ -29,6 +29,10 @@ class Engine {
 public:
     Engine() {}
 
+    ~Engine() {
+        stop();
+    }
+
     template<typename T, typename... Args>
     T* addModule(Args&&... args) {
         static_assert(std::is_base_of<Module, T>::value, "T must be derived from IModule");
@@ -45,7 +49,9 @@ public:
         return entityBuilder;
     }
 
-    void run();
+    void start();
+    int step();
+    void stop();
 
 private:
     bool running = true;

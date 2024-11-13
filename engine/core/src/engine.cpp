@@ -1,17 +1,6 @@
 #include "engine.hpp"
 
-int add(int a, int b) {
-    return a + b;
-}
-
-void Engine::run() {
-    // sol::state lua;
-    // lua.open_libraries(sol::lib::base);
-
-    // lua.set_function("add", &add);
-
-    // lua.script_file("script.lua");
-
+void Engine::start() {
     for (auto& [type, module] : modules) {
         module->setEventManager(eventManager);
     }
@@ -19,13 +8,16 @@ void Engine::run() {
     eventManager->subscribe<Events::Shutdown>([this](std::shared_ptr<Event> event) {
         running = false;
     });
+}
 
-    while (running) {
-        for (auto& [type, module] : modules) {
-            module->update();
-        }
+int Engine::step() {
+    for (auto& [type, module] : modules) {
+        module->update();
     }
+    return running;
+}
 
+void Engine::stop() {
     for (auto& [type, module] : modules) {
         module->shutdown();
     }

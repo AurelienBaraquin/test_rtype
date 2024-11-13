@@ -11,6 +11,9 @@ int main() {
         .with<Components::Transform>(400, 225, 0)
         .build();
 
-    engine.run();
+    engine.start();
+
+    while (engine.step()) {}
+
     return 0;
 }
