@@ -1,7 +1,7 @@
 #include "engine.hpp"
 
 void Engine::start() {
-    for (auto& [type, module] : modules) {
+    for (auto& [_, module] : modules) {
         module->setEventManager(eventManager);
     }
 
@@ -11,14 +11,14 @@ void Engine::start() {
 }
 
 int Engine::step() {
-    for (auto& [type, module] : modules) {
+    for (auto& [_, module] : modules) {
         module->update();
     }
     return running;
 }
 
 void Engine::stop() {
-    for (auto& [type, module] : modules) {
+    for (auto& [_, module] : modules) {
         module->shutdown();
     }
 }
