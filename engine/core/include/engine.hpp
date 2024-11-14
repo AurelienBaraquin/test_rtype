@@ -8,8 +8,8 @@
 class EntityBuilder {
 public:
     EntityBuilder(entt::registry& registry)
-        : registry(registry) {}
-    
+        : registry(registry), entity(registry.create()) {}
+
     template <typename ComponentType, typename... Args>
     EntityBuilder& with(Args&&... args) {
         registry.emplace<ComponentType>(entity, std::forward<Args>(args)...);
